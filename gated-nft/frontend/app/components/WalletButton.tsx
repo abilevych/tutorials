@@ -29,22 +29,14 @@ function WalletComponent() {
 
   const initContracts = async (provider: Web3Provider, signer: Signer) => {
     if (provider && signer) {
-      const greeterContract = new Contract(
-        GREETER_ADDRESS,
-        GREETER_CONTRACT_ABI,
-        signer,
-      );
+      const greeterContract = new Contract(GREETER_ADDRESS, GREETER_CONTRACT_ABI, signer);
 
       web3Context.setGreeterContractInstance(greeterContract);
 
       const fetchedGreeting = await greeterContract.greet();
       web3Context.setGreetingMessage(fetchedGreeting);
 
-      const nftContract = new Contract(
-        NFT_CONTRACT_ADDRESS,
-        NFT_CONTRACT_ABI,
-        signer,
-      );
+      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI, signer);
 
       const address = await signer.getAddress();
       const balance = await nftContract.balanceOf(address);
@@ -95,7 +87,6 @@ function WalletComponent() {
   };
 
   const connectWallet = async () => {
-    console.log("connectWallet");
     if (!networkOk) await switchNetwork();
     try {
       if ((window as any).ethereum) {

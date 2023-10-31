@@ -5,8 +5,9 @@ import { ethers } from "ethers";
 import * as fs from "fs";
 import * as hre from "hardhat";
 import { Wallets } from "../../../../tests/testData";
+import {NETWORK_NAME} from "frontend/app/constants/consts";
 
-export class ERC721 {
+export class Utils {
   public nftAddress: string;
   private baseURI: string;
   private erc721RecipientBalance: string;
@@ -15,13 +16,18 @@ export class ERC721 {
 
   public contractEntity: any;
   public deployer: any;
+  private paymasterAddress: string;
+  private paymasterFee: string;
+  private paymasterBalance: string;
+  public contractArtifacts: object;
+  public greeterAddress: string;
 
   constructor() {}
 
   public async deployContract(
-    privateKey: string = localConfig.privateKey,
-    contractName: string,
-    contractArguments: string = undefined,
+      privateKey: string = localConfig.privateKey,
+      contractName: string,
+      contractArguments: string = undefined,
   ) {
     const wallet = new Wallet(privateKey);
     const deployer = new Deployer(hre, wallet);
@@ -44,12 +50,12 @@ export class ERC721 {
   }
 
   async deployERC721Contract(
-    recipientAddress: string = Wallets.secondWalletAddress,
-    privateKey: string = localConfig.privateKey,
+      recipientAddress: string = Wallets.secondWalletAddress,
+      privateKey: string = localConfig.privateKey,
   ) {
     console.log(`Running deploy script for the ERC721 contract...`);
     console.log(
-      `You first need to add a RECIPIENT_ADDRESS to mint the NFT to...`,
+        `You first need to add a RECIPIENT_ADDRESS to mint the NFT to...`,
     );
 
     try {
@@ -70,17 +76,17 @@ export class ERC721 {
   }
 
   async mintERC721(
-    stone: string = "Power Stone",
-    privateKey: string = localConfig.privateKey,
-    recepientAddress: string = Wallets.secondWalletAddress,
+      stone: string = "Power Stone",
+      privateKey: string = localConfig.privateKey,
+      recepientAddress: string = Wallets.secondWalletAddress,
   ) {
     const contract = this.contractEntity;
 
     try {
       const tx = await contract.mint(
-        recepientAddress,
-        stone,
-        localConfig.gasLimit,
+          recepientAddress,
+          stone,
+          localConfig.gasLimit,
       );
       const receipt = await tx.wait();
       console.log(`The ${stone} has been given to ${recepientAddress}`);
@@ -92,7 +98,7 @@ export class ERC721 {
   }
 
   async getBalanceOfERC721Recipient(
-    recepientAddress: string = Wallets.secondWalletAddress,
+      recepientAddress: string = Wallets.secondWalletAddress,
   ) {
     const balance = await this.contractEntity.balanceOf(recepientAddress);
     console.log(`Balance of the recipient: ${balance}`);
@@ -104,7 +110,7 @@ export class ERC721 {
 
   private async updateBaseURI() {
     const baseURI =
-      "https://ipfs.io/ipfs/QmPtDtJEJDzxthbKmdgvYcLa9oNUUUkh7vvz5imJFPQdKx";
+        "https://ipfs.io/ipfs/QmPtDtJEJDzxthbKmdgvYcLa9oNUUUkh7vvz5imJFPQdKx";
 
     let setBaseUriTransaction = await this.contractEntity.setBaseURI(baseURI);
     await setBaseUriTransaction.wait();
@@ -124,7 +130,7 @@ export class ERC721 {
 
   private async updatePaymasterDeployScript() {
     const paymasterDeploymentFilePath =
-      __dirname + "/deploy-ERC721GatedPaymaster.ts";
+        __dirname + "/deploy-ERC721GatedPaymaster.ts";
     const res = fs.readFileSync(paymasterDeploymentFilePath, "utf8");
     const final = res.replace(/NFT-CONTRACT-ADDRESS-HERE/g, this.nftAddress);
     fs.writeFileSync(paymasterDeploymentFilePath, final, "utf8");
@@ -133,8 +139,8 @@ export class ERC721 {
   }
 
   async deployERC721Script(
-    recepientAddress: string = Wallets.secondWalletAddress,
-    privateKey: string = localConfig.privateKey,
+      recepientAddress: string = Wallets.secondWalletAddress,
+      privateKey: string = localConfig.privateKey,
   ) {
     await this.deployERC721Contract(recepientAddress, privateKey);
     await this.mintERC721();
@@ -145,21 +151,10 @@ export class ERC721 {
 
     return [this.nftAddress, this.baseURI, this.erc721RecipientBalance];
   }
-}
-
-export class ERC721GatedPaymaster extends ERC721 {
-  private paymasterAddress: string;
-  private paymasterFee: string;
-  private paymasterBalance: string;
-  public contractArtifacts: object;
-
-  constructor() {
-    super();
-  }
 
   public async getContractArtifacts(
-    privateKey: string = localConfig.privateKey,
-    contractName: string = "ERC721GatedPaymaster",
+      privateKey: string = localConfig.privateKey,
+      contractName: string = "ERC721GatedPaymaster",
   ) {
     const wallet = new Wallet(privateKey);
     const deployer = new Deployer(hre, wallet);
@@ -197,8 +192,8 @@ export class ERC721GatedPaymaster extends ERC721 {
 
   async getDeploymentFee(contractArguments: string = this.nftAddress) {
     const deploymentFee = await this.deployer.estimateDeployFee(
-      this.contractArtifacts,
-      [contractArguments],
+        this.contractArtifacts,
+        [contractArguments],
     );
 
     const parsedFee = ethers.utils.formatEther(deploymentFee.toString());
@@ -210,8 +205,8 @@ export class ERC721GatedPaymaster extends ERC721 {
   }
 
   async fundingPaymasterAddress(
-    sum: string = "0.005",
-    paymasterAddress: string = this.paymasterAddress,
+      sum: string = "0.005",
+      paymasterAddress: string = this.paymasterAddress,
   ) {
     console.log("Funding paymaster with ETH");
 
@@ -234,10 +229,10 @@ export class ERC721GatedPaymaster extends ERC721 {
   }
 
   async deployGatedPaymasterContract(
-    privateKey: string = localConfig.privateKey,
+      privateKey: string = localConfig.privateKey,
   ) {
     console.log(
-      `Running deploy script for the ERC721GatedPaymaster contract...`,
+        `Running deploy script for the ERC721GatedPaymaster contract...`,
     );
 
     await this.getContractArtifacts(Wallets.secondWalletPrivateKey);
@@ -253,8 +248,8 @@ export class ERC721GatedPaymaster extends ERC721 {
     const frontendConstantsFilePath = "../frontend/app/constants/consts.tsx";
     const data = fs.readFileSync(frontendConstantsFilePath, "utf8");
     const result = data.replace(
-      /PAYMASTER-CONTRACT-ADDRESS/g,
-      this.paymasterAddress,
+        /PAYMASTER-CONTRACT-ADDRESS/g,
+        this.paymasterAddress,
     );
     fs.writeFileSync(frontendConstantsFilePath, result, "utf8");
 
@@ -267,14 +262,6 @@ export class ERC721GatedPaymaster extends ERC721 {
 
     return [this.paymasterAddress, this.paymasterBalance];
   }
-}
-
-export class Greeter extends ERC721GatedPaymaster {
-  public greeterAddress: string;
-
-  constructor() {
-    super();
-  }
 
   async updateFEbyGreeterAddress() {
     const frontendConstantsFilePath = "../frontend/app/constants/consts.tsx";
@@ -286,8 +273,8 @@ export class Greeter extends ERC721GatedPaymaster {
   }
 
   async deployGreeter(
-    contractArguments: string[] = [],
-    privateKey: string = localConfig.privateKey,
+      contractArguments: string[] = [],
+      privateKey: string = localConfig.privateKey,
   ) {
     let greeter;
 
@@ -297,14 +284,14 @@ export class Greeter extends ERC721GatedPaymaster {
     this.deployer = deployer;
 
     this.contractArtifacts = await this.getContractArtifacts(
-      localConfig.privateKey,
-      "Greeter",
+        localConfig.privateKey,
+        "Greeter",
     );
 
     try {
       greeter = await this.deployer.deploy(
-        this.contractArtifacts,
-        contractArguments,
+          this.contractArtifacts,
+          contractArguments,
       );
     } catch (e) {
       console.error("Error deploying Greeter:", e);
@@ -312,7 +299,7 @@ export class Greeter extends ERC721GatedPaymaster {
     }
 
     console.log(
-      "Constructor args:" + greeter.interface.encodeDeploy(contractArguments),
+        "Constructor args:" + greeter.interface.encodeDeploy(contractArguments),
     );
 
     this.greeterAddress = greeter.address;
@@ -330,4 +317,22 @@ export class Greeter extends ERC721GatedPaymaster {
 
     return this.greeterAddress;
   }
+
+  async updateFEconfig() {
+    const frontendConstantsFilePath = "../frontend/app/constants/consts.tsx";
+    let data = fs.readFileSync(frontendConstantsFilePath, "utf8");
+    const networkName = "In-Memory Node";
+    const chainId = "0x104";
+
+    // Заменяем NETWORK_NAME и CHAIN_ID в файле данных
+    data = data.replace(/zkSync Era Testnet/g, networkName);
+    data = data.replace(/0x118/g, chainId);
+
+    // Записываем обновленные данные обратно в файл
+    fs.writeFileSync(frontendConstantsFilePath, data, "utf8");
+
+    console.log("The Front-End has been configured for testing");
+  }
+
 }
+

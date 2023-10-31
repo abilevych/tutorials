@@ -37,20 +37,18 @@ export default function Input({
   };
 
   async function getEstimate() {
-    // Get gas price
     if (!provider) return;
     let gasPrice = await provider.getGasPrice();
     let price = ethers.utils.formatEther(gasPrice.toString());
     setPrice(price);
-    // Estimate gas required for transaction
+
     if (!greeterInstance) return;
     let gasEstimate = await greeterInstance.estimateGas["setGreeting"](message);
     let gas = ethers.utils.formatEther(gasEstimate.toString());
     setGas(gas);
-    // Calculate the cost: gasPrice * gasEstimate
+
     let transactionCost = gasPrice.mul(gasEstimate);
     let cost = ethers.utils.formatEther(transactionCost.toString());
-    // Set the cost state
     setCost(cost);
   }
 

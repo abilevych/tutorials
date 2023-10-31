@@ -26,6 +26,7 @@
   },
   "scripts": {
     "test": "hardhat test",
+    "dev:ui": "cd ../frontend && yarn dev",
     "deploy": "yarn hardhat deploy-zksync",
     "greeter": "yarn hardhat deploy-zksync --script deploy-greeter.ts",
     "nft": "yarn hardhat deploy-zksync --script deploy-ERC721.ts",

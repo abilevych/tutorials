@@ -28,10 +28,8 @@ export default function Checkout({
         txHandle = await greeterInstance.setGreeting(message);
       }
 
-      // Wait until the transaction is committed
       await txHandle.wait();
 
-      // Update greeting
       const updatedGreeting = await greeterInstance.greet();
       setGreetingMessage(updatedGreeting);
     } catch (error) {

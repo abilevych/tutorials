@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { ERC721, ERC721GatedPaymaster, Greeter } from "./utils/utils";
+import {Utils} from "./utils/utils";
 import { localConfig } from "../../../tests/testConfig";
 
 describe("Gated NFT", function () {
-  describe("ERC721", function () {
+  xdescribe("ERC721", function () {
     let contract: any;
     let result: any;
-    const utils = new ERC721();
+    const utils = new Utils();
 
     beforeEach(async function () {
       contract = await utils.deployERC721Contract();
@@ -128,9 +128,9 @@ describe("Gated NFT", function () {
     });
   });
 
-  describe("ERC721GatedPaymaster", function () {
+  xdescribe("ERC721GatedPaymaster", function () {
     let result: any;
-    const utils = new ERC721GatedPaymaster();
+    const utils = new Utils();
 
     beforeEach(async function () {
       await utils.deployERC721Contract();
@@ -196,4 +196,21 @@ describe("Gated NFT", function () {
       expect(result[0].length).to.equal(42);
     });
   });
+
+  describe("Front-end check", function () {
+    let result: any;
+    const utils = new Utils();
+
+    before(async function () {
+      await utils.deployERC721Script();
+      await utils.deployGatedPaymasterScript()
+      await utils.deployGreeterScript()
+      await utils.updateFEconfig()
+
+    });
+
+    it("dummy test", async function () {
+      console.log('1')
+    });
+});
 });

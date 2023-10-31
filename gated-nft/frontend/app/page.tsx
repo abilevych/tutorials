@@ -34,14 +34,14 @@ export default function Home() {
           by Stark Industries paymaster. Give it a try now!
         </Text>
       </div>
-      <Greeting greeting={web3Context.greeting} />
-      <Input
-        greeterInstance={web3Context.greeterContractInstance}
-        setGreetingMessage={web3Context.setGreetingMessage}
-        provider={web3Context.provider}
-        nfts={web3Context.nfts}
-      />
-      <div className="mb-12"></div>
+        <Greeting greeting={web3Context.greeting} />
+        <Input
+            greeterInstance={web3Context.greeterContractInstance}
+            setGreetingMessage={web3Context.setGreetingMessage}
+            provider={web3Context.provider}
+            nfts={web3Context.nfts}
+        />
+        <div className="mb-12"></div>
     </main>
   );
 }
