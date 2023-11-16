@@ -43,4 +43,4 @@ The Gated-NFT tests can be properly run only by using an appropriate script in p
 - [Documentation](https://v2-docs.zksync.io/dev/)
 - [GitHub](https://github.com/matter-labs)
 - [Twitter](https://twitter.com/zksync)
-- [Discord](https://discord.gg/nMaPGrDDwk)
+- [Discord](https://join.zksync.dev/)
