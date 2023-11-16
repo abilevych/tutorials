@@ -33,6 +33,10 @@ In order to run test, you need to start the zkSync local environment. Please che
 
 If you do not start the zkSync local environment, the tests will fail with error `Error: could not detect network (event="noNetwork", code=NETWORK_ERROR, version=providers/5.7.2)`
 
+### Test execution
+
+The Gated-NFT tests can be properly run only by using an appropriate script in package.json ("tests"). An attempt to run those tests via the IDE directly would be expectedly unsuccessful due to TS errors.
+
 ## Official Links
 
 - [Website](https://zksync.io/)
